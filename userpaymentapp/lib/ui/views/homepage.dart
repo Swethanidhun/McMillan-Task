@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:userpaymentapp/ui/views/paymentdetails/paymentdetaild.dart';
+import 'package:userpaymentapp/ui/widgets/appbar.dart';
 import 'package:userpaymentapp/ui/widgets/circlebutton.dart';
+import 'package:userpaymentapp/ui/widgets/toggleicon.dart';
 
-class Homepage extends StatelessWidget {
+class Homepage extends StatefulWidget {
   const Homepage({super.key});
 
   @override
+  State<Homepage> createState() => _HomepageState();
+}
+
+class _HomepageState extends State<Homepage> {
+  TextEditingController pricecontroller = TextEditingController();
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Colors.blue[50],
-        appBar: AppBar(
-          title: const Center(
-              child: Text(
-            "TODO",
-            style: TextStyle(color: Colors.black),
-          )),
-          backgroundColor: Colors.white,
-          elevation: 0,
+        backgroundColor: Colors.blue[50],
+        appBar: const MyAppBar(
+          isClear: false,
         ),
         body: Stack(
           children: [
@@ -28,10 +30,15 @@ class Homepage extends StatelessWidget {
               itemCount: 9,
               padding: const EdgeInsets.all(20),
               itemBuilder: (context, index) {
-                return const Card(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [CircleAvatar(), Text("data")],
+                return GestureDetector(
+                  onTap: () {
+                    return _paymentMetodDialog(context);
+                  },
+                  child: const Card(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [CircleAvatar(), Text("data")],
+                    ),
                   ),
                 );
               },
@@ -40,13 +47,146 @@ class Homepage extends StatelessWidget {
               height: 230,
               width: 22,
               icon: Icons.group,
+              onTap: () {
+                _addVisitorDialog(context);
+              },
             ),
             CircleButton(
               height: 300,
               width: 22,
               icon: Icons.paid,
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const PaymentDetails(),
+                ));
+              },
             ),
           ],
         ));
+  }
+
+  void _addVisitorDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          backgroundColor: Colors.blue[50],
+          title: const Center(child: Text("Enter Visitor Details")),
+          content: IntrinsicHeight(
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.person),
+                      hintText: "Enter visitor name",
+                      hintStyle: TextStyle(color: Colors.grey),
+                      border: OutlineInputBorder(borderSide: BorderSide.none),
+                      filled: true,
+                      fillColor: Colors.white),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                  decoration: const InputDecoration(
+                      prefixIcon: Icon(Icons.person),
+                      hintText: "Enter Sponser name",
+                      hintStyle: TextStyle(color: Colors.grey),
+                      border: OutlineInputBorder(borderSide: BorderSide.none),
+                      filled: true,
+                      fillColor: Colors.white),
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Divider(
+                  color: Colors.grey,
+                  thickness: 1,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Save'),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _paymentMetodDialog(BuildContext context) {
+    bool toggle = false;
+
+    void istoggle() {
+      toggle = !toggle;
+    }
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          backgroundColor: Colors.blue[50],
+          title: const Column(
+            children: [CircleAvatar(), Text("data")],
+          ),
+          content: IntrinsicHeight(
+            child: Column(
+              children: [
+                const ToggleIcon(method: "UPI"),
+                const ToggleIcon(method: "CASH"),
+                const ToggleIcon(method: "LATER"),
+                TextFormField(
+                    decoration: const InputDecoration(
+                        border: OutlineInputBorder(),
+                        filled: true,
+                        fillColor: Colors.white)),
+                const SizedBox(
+                  height: 10,
+                ),
+                const Divider(
+                  color: Colors.grey,
+                  thickness: 1,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Save'),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }

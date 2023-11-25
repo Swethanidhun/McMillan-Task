@@ -5,10 +5,12 @@ class CircleButton extends StatelessWidget {
       {super.key,
       required this.height,
       required this.width,
-      required this.icon});
+      required this.icon,
+      required this.onTap});
   final double height;
   final double width;
   final IconData icon;
+  final void Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,10 +24,13 @@ class CircleButton extends StatelessWidget {
                     const BoxDecoration(shape: BoxShape.circle, boxShadow: [
                   BoxShadow(blurRadius: 8, spreadRadius: 1, color: Colors.grey,)
                 ]),
-                child: CircleAvatar(
-                  maxRadius: 28,
-                  backgroundColor: Colors.blue[300],
-                  child: Icon(icon, color: Colors.white),
+                child: GestureDetector(
+                  onTap:onTap ,
+                  child: CircleAvatar(
+                    maxRadius: 28,
+                    backgroundColor: Colors.blue[300],
+                    child: Icon(icon, color: Colors.white),
+                  ),
                 )),
           ),
         ],
