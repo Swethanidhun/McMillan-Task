@@ -4,59 +4,11 @@
 
 import 'dart:convert';
 
-UserModel userModelFromJson(String str) => UserModel.fromJson(json.decode(str));
+List<UserModel> userModelFromJson(String str) => List<UserModel>.from(json.decode(str).map((x) => UserModel.fromJson(x)));
 
-String userModelToJson(UserModel data) => json.encode(data.toJson());
+String userModelToJson(List<UserModel> data) => json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
 
 class UserModel {
-    List<Result>? results;
-    Info? info;
-
-    UserModel({
-        this.results,
-        this.info,
-    });
-
-    factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
-        results: json["results"] == null ? [] : List<Result>.from(json["results"]!.map((x) => Result.fromJson(x))),
-        info: json["info"] == null ? null : Info.fromJson(json["info"]),
-    );
-
-    Map<String, dynamic> toJson() => {
-        "results": results == null ? [] : List<dynamic>.from(results!.map((x) => x.toJson())),
-        "info": info?.toJson(),
-    };
-}
-
-class Info {
-    String? seed;
-    int? results;
-    int? page;
-    String? version;
-
-    Info({
-        this.seed,
-        this.results,
-        this.page,
-        this.version,
-    });
-
-    factory Info.fromJson(Map<String, dynamic> json) => Info(
-        seed: json["seed"],
-        results: json["results"],
-        page: json["page"],
-        version: json["version"],
-    );
-
-    Map<String, dynamic> toJson() => {
-        "seed": seed,
-        "results": results,
-        "page": page,
-        "version": version,
-    };
-}
-
-class Result {
     Gender? gender;
     Name? name;
     Location? location;
@@ -70,7 +22,7 @@ class Result {
     Picture? picture;
     String? nat;
 
-    Result({
+    UserModel({
         this.gender,
         this.name,
         this.location,
@@ -85,7 +37,7 @@ class Result {
         this.nat,
     });
 
-    factory Result.fromJson(Map<String, dynamic> json) => Result(
+    factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
         gender: genderValues.map[json["gender"]]!,
         name: json["name"] == null ? null : Name.fromJson(json["name"]),
         location: json["location"] == null ? null : Location.fromJson(json["location"]),
@@ -114,6 +66,8 @@ class Result {
         "picture": picture?.toJson(),
         "nat": nat,
     };
+    static listFromJson(list) =>
+      List<UserModel>.from(list.map((x) => UserModel.fromJson(x)));
 }
 
 class Dob {
@@ -372,4 +326,5 @@ class EnumValues<T> {
         reverseMap = map.map((k, v) => MapEntry(v, k));
         return reverseMap;
     }
+     
 }

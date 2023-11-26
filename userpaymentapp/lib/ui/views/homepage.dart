@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:userpaymentapp/ui/viewmodels/Homeviewmodel.dart';
 import 'package:userpaymentapp/ui/views/paymentdetails/paymentdetaild.dart';
 import 'package:userpaymentapp/ui/widgets/appbar.dart';
 import 'package:userpaymentapp/ui/widgets/circlebutton.dart';
+import 'package:userpaymentapp/ui/widgets/textfield.dart';
 import 'package:userpaymentapp/ui/widgets/toggleicon.dart';
 
 class Homepage extends StatefulWidget {
@@ -13,7 +15,15 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  TextEditingController pricecontroller = TextEditingController();
+  final homestore = HomeStore();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    homestore.fetchUserData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,52 +31,59 @@ class _HomepageState extends State<Homepage> {
         appBar: const MyAppBar(
           isClear: false,
         ),
-        body: listBody());
-  }
+        body: Stack(
+          children: [
+            Observer(builder: (context) {
+              final userlist = homestore.userlist;
 
-  listBody() {
-    final homestore = HomeStore();
-    Stack(
-      children: [
-        GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, mainAxisSpacing: 10.0, crossAxisSpacing: 10.0),
-          itemCount: 9,
-          padding: const EdgeInsets.all(20),
-          itemBuilder: (context, index) {
-            return GestureDetector(
+              return GridView.builder(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    mainAxisSpacing: 10.0,
+                    crossAxisSpacing: 10.0),
+                itemCount: userlist.length,
+                padding: const EdgeInsets.all(20),
+                itemBuilder: (context, index) {
+                  return GestureDetector(
+                    onTap: () {
+                      return _paymentMetodDialog(context, index);
+                    },
+                    child: Card(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          CircleAvatar(
+                            backgroundImage: NetworkImage(
+                                "${userlist[index].picture!.medium}"),
+                          ),
+                          Text("${userlist[index].name!.first}")
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+            }),
+            CircleButton(
+              height: 230,
+              width: 22,
+              icon: Icons.group,
               onTap: () {
-                return _paymentMetodDialog(context);
+                _addVisitorDialog(context);
               },
-              child: const Card(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [CircleAvatar(), Text("data")],
-                ),
-              ),
-            );
-          },
-        ),
-        CircleButton(
-          height: 230,
-          width: 22,
-          icon: Icons.group,
-          onTap: () {
-            _addVisitorDialog(context);
-          },
-        ),
-        CircleButton(
-          height: 300,
-          width: 22,
-          icon: Icons.paid,
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => const PaymentDetails(),
-            ));
-          },
-        ),
-      ],
-    );
+            ),
+            CircleButton(
+              height: 300,
+              width: 22,
+              icon: Icons.paid,
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => const PaymentDetails(),
+                ));
+              },
+            ),
+          ],
+        ));
   }
 
   void _addVisitorDialog(BuildContext context) {
@@ -81,27 +98,18 @@ class _HomepageState extends State<Homepage> {
           content: IntrinsicHeight(
             child: Column(
               children: [
-                TextFormField(
-                  decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.person),
-                      hintText: "Enter visitor name",
-                      hintStyle: TextStyle(color: Colors.grey),
-                      border: OutlineInputBorder(borderSide: BorderSide.none),
-                      filled: true,
-                      fillColor: Colors.white),
+                TextFields(
+                  hinttext: "Enter Visitor Name",
+                  icon: const Icon(Icons.person),
+                  controllers: homestore.visitorcontroller,
                 ),
                 const SizedBox(
                   height: 20,
                 ),
-                TextFormField(
-                  decoration: const InputDecoration(
-                      prefixIcon: Icon(Icons.person),
-                      hintText: "Enter Sponser name",
-                      hintStyle: TextStyle(color: Colors.grey),
-                      border: OutlineInputBorder(borderSide: BorderSide.none),
-                      filled: true,
-                      fillColor: Colors.white),
-                ),
+                TextFields(
+                    hinttext: "Enter Sponser Name",
+                    icon: const Icon(Icons.person),
+                    controllers: homestore.sponsercontroller),
                 const SizedBox(
                   height: 10,
                 ),
@@ -134,7 +142,7 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  void _paymentMetodDialog(BuildContext context) {
+  void _paymentMetodDialog(BuildContext context, int index) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -142,8 +150,14 @@ class _HomepageState extends State<Homepage> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           backgroundColor: Colors.blue[50],
-          title: const Column(
-            children: [CircleAvatar(), Text("data")],
+          title: Column(
+            children: [
+              CircleAvatar(
+                backgroundImage: NetworkImage(
+                    "${homestore.userlist[index].picture!.medium}"),
+              ),
+              Text("${homestore.userlist[index].name!.first}")
+            ],
           ),
           content: IntrinsicHeight(
             child: Column(
@@ -151,11 +165,7 @@ class _HomepageState extends State<Homepage> {
                 const ToggleIcon(method: "UPI"),
                 const ToggleIcon(method: "CASH"),
                 const ToggleIcon(method: "LATER"),
-                TextFormField(
-                    decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        filled: true,
-                        fillColor: Colors.white)),
+                TextFields(controllers: homestore.pricecontroller),
                 const SizedBox(
                   height: 10,
                 ),
