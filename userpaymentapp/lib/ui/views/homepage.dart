@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:userpaymentapp/ui/viewmodels/Homeviewmodel.dart';
 import 'package:userpaymentapp/ui/views/paymentdetails/paymentdetaild.dart';
 import 'package:userpaymentapp/ui/widgets/appbar.dart';
 import 'package:userpaymentapp/ui/widgets/circlebutton.dart';
@@ -20,49 +21,52 @@ class _HomepageState extends State<Homepage> {
         appBar: const MyAppBar(
           isClear: false,
         ),
-        body: Stack(
-          children: [
-            GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  mainAxisSpacing: 10.0,
-                  crossAxisSpacing: 10.0),
-              itemCount: 9,
-              padding: const EdgeInsets.all(20),
-              itemBuilder: (context, index) {
-                return GestureDetector(
-                  onTap: () {
-                    return _paymentMetodDialog(context);
-                  },
-                  child: const Card(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [CircleAvatar(), Text("data")],
-                    ),
-                  ),
-                );
-              },
-            ),
-            CircleButton(
-              height: 230,
-              width: 22,
-              icon: Icons.group,
+        body: listBody());
+  }
+
+  listBody() {
+    final homestore = HomeStore();
+    Stack(
+      children: [
+        GridView.builder(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, mainAxisSpacing: 10.0, crossAxisSpacing: 10.0),
+          itemCount: 9,
+          padding: const EdgeInsets.all(20),
+          itemBuilder: (context, index) {
+            return GestureDetector(
               onTap: () {
-                _addVisitorDialog(context);
+                return _paymentMetodDialog(context);
               },
-            ),
-            CircleButton(
-              height: 300,
-              width: 22,
-              icon: Icons.paid,
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const PaymentDetails(),
-                ));
-              },
-            ),
-          ],
-        ));
+              child: const Card(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [CircleAvatar(), Text("data")],
+                ),
+              ),
+            );
+          },
+        ),
+        CircleButton(
+          height: 230,
+          width: 22,
+          icon: Icons.group,
+          onTap: () {
+            _addVisitorDialog(context);
+          },
+        ),
+        CircleButton(
+          height: 300,
+          width: 22,
+          icon: Icons.paid,
+          onTap: () {
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => const PaymentDetails(),
+            ));
+          },
+        ),
+      ],
+    );
   }
 
   void _addVisitorDialog(BuildContext context) {
@@ -131,12 +135,6 @@ class _HomepageState extends State<Homepage> {
   }
 
   void _paymentMetodDialog(BuildContext context) {
-    bool toggle = false;
-
-    void istoggle() {
-      toggle = !toggle;
-    }
-
     showDialog(
       context: context,
       builder: (BuildContext context) {
