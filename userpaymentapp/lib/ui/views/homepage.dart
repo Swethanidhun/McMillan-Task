@@ -18,12 +18,6 @@ class _HomepageState extends State<Homepage> {
   final homestore = HomeStore();
 
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    homestore.fetchUserData();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,37 +27,60 @@ class _HomepageState extends State<Homepage> {
         ),
         body: Stack(
           children: [
-            Observer(builder: (context) {
-              final userlist = homestore.userlist;
-
-              return GridView.builder(
+          
+               GridView.builder(
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     mainAxisSpacing: 10.0,
                     crossAxisSpacing: 10.0),
-                itemCount: userlist.length,
+                itemCount:homestore.itemCount,
                 padding: const EdgeInsets.all(20),
                 itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      return _paymentMetodDialog(context, index);
-                    },
-                    child: Card(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          CircleAvatar(
-                            backgroundImage: NetworkImage(
-                                "${userlist[index].picture!.medium}"),
+                  return Observer(
+                    builder: (context) {
+                      final userlist = homestore.userlist[index];
+                      return GestureDetector(
+                        onTap: () {
+                          return _paymentMetodDialog(context, index);
+                        },
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: homestore.toggle == true
+                                        ? Colors.green
+                                        : Colors.white,
+                                    width: 2.0,
+                                  ),
+                                ),
+                                child: CircleAvatar(
+                                  backgroundImage: NetworkImage(
+                                      "${userlist.picture!.medium}"),
+                                ),
+                              ),
+                              Text("${userlist.name!.first}")
+                            ],
                           ),
-                          Text("${userlist[index].name!.first}")
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    }
                   );
                 },
-              );
-            }),
+              ),
+
+
+
+
+
+
+
+
             CircleButton(
               height: 230,
               width: 22,
@@ -82,8 +99,11 @@ class _HomepageState extends State<Homepage> {
                 ));
               },
             ),
+            
           ],
-        ));
+        ),
+        
+        );
   }
 
   void _addVisitorDialog(BuildContext context) {
@@ -128,6 +148,7 @@ class _HomepageState extends State<Homepage> {
                     ),
                     TextButton(
                       onPressed: () {
+                        homestore.addVisitor();
                         Navigator.of(context).pop();
                       },
                       child: const Text('Save'),
@@ -184,9 +205,12 @@ class _HomepageState extends State<Homepage> {
                     ),
                     TextButton(
                       onPressed: () {
+                        print(homestore.toggle);
+                        
+                        homestore.payDetails(index);
                         Navigator.of(context).pop();
                       },
-                      child: const Text('Save'),
+                      child: const Text('Done'),
                     ),
                   ],
                 )

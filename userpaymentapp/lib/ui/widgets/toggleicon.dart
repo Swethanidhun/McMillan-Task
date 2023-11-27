@@ -9,8 +9,6 @@ class ToggleIcon extends StatefulWidget {
 }
 class _ToggleIconState extends State<ToggleIcon> {
   final homestore = HomeStore();
-   String? selectedMethod;
-  // bool isToggled = false;
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +20,8 @@ class _ToggleIconState extends State<ToggleIcon> {
             onTap: () {
               setState(() {
                 homestore.istoggle();
-                 if (homestore.toggle) {
-                selectedMethod = widget.method;
-                print(selectedMethod);
-              }
+                homestore.getPayMethod(widget.method.toString());
+                
               });
             },
             child: homestore.toggle

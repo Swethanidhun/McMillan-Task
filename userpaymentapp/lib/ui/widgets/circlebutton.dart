@@ -27,7 +27,7 @@ class CircleButton extends StatelessWidget {
                 child: GestureDetector(
                   onTap:onTap ,
                   child: CircleAvatar(
-                    maxRadius: 28,
+                    maxRadius: 25,
                     backgroundColor: Colors.blue[300],
                     child: Icon(icon, color: Colors.white),
                   ),
