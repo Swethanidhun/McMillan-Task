@@ -21,89 +21,76 @@ class _HomepageState extends State<Homepage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.blue[50],
-        appBar: const MyAppBar(
-          isClear: false,
-        ),
-        body: Stack(
-          children: [
-          
-               GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisSpacing: 10.0,
-                    crossAxisSpacing: 10.0),
-                itemCount:homestore.itemCount,
-                padding: const EdgeInsets.all(20),
-                itemBuilder: (context, index) {
-                  return Observer(
-                    builder: (context) {
-                      final userlist = homestore.userlist[index];
-                      return GestureDetector(
-                        onTap: () {
-                          return _paymentMetodDialog(context, index);
-                        },
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15)),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    color: homestore.toggle == true
-                                        ? Colors.green
-                                        : Colors.white,
-                                    width: 2.0,
-                                  ),
-                                ),
-                                child: CircleAvatar(
-                                  backgroundImage: NetworkImage(
-                                      "${userlist.picture!.medium}"),
-                                ),
-                              ),
-                              Text("${userlist.name!.first}")
-                            ],
+      backgroundColor: Colors.blue[50],
+      appBar: const MyAppBar(
+        isClear: false,
+      ),
+      body: Stack(
+        children: [
+          GridView.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisSpacing: 10.0,
+                crossAxisSpacing: 10.0),
+            itemCount: homestore.itemCount,
+            padding: const EdgeInsets.all(20),
+            itemBuilder: (context, index) {
+              return Observer(builder: (context) {
+                final userlist = homestore.userlist[index];
+                return GestureDetector(
+                  onTap: () {
+                    return _paymentMetodDialog(context, index);
+                  },
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                              color: homestore.toggle == true
+                                  ? Colors.green
+                                  : Colors.white,
+                              width: 2.0,
+                            ),
+                          ),
+                          child: CircleAvatar(
+                            backgroundImage:
+                                NetworkImage("${userlist.picture!.medium}"),
                           ),
                         ),
-                      );
-                    }
-                  );
-                },
-              ),
-
-
-
-
-
-
-
-
-            CircleButton(
-              height: 230,
-              width: 22,
-              icon: Icons.group,
-              onTap: () {
-                _addVisitorDialog(context);
-              },
-            ),
-            CircleButton(
-              height: 300,
-              width: 22,
-              icon: Icons.paid,
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => const PaymentDetails(),
-                ));
-              },
-            ),
-            
-          ],
-        ),
-        
-        );
+                        Text("${userlist.name!.first}")
+                      ],
+                    ),
+                  ),
+                );
+              });
+            },
+          ),
+          CircleButton(
+            height: 230,
+            width: 22,
+            icon: Icons.group,
+            onTap: () {
+              _addVisitorDialog(context);
+            },
+          ),
+          CircleButton(
+            height: 300,
+            width: 22,
+            icon: Icons.paid,
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => const PaymentDetails(),
+              ));
+            },
+          ),
+        ],
+      ),
+    );
   }
 
   void _addVisitorDialog(BuildContext context) {
@@ -205,8 +192,6 @@ class _HomepageState extends State<Homepage> {
                     ),
                     TextButton(
                       onPressed: () {
-                        print(homestore.toggle);
-                        
                         homestore.payDetails(index);
                         Navigator.of(context).pop();
                       },

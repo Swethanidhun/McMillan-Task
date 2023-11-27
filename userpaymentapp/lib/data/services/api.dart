@@ -1,14 +1,13 @@
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:http/http.dart' as http;
 import 'package:mobx/mobx.dart';
 import 'package:userpaymentapp/data/models/usermodel.dart';
 part 'api.g.dart';
 
-class Apis = _ApisBase with _$Apis;
+class Apis = ApisBase with _$Apis;
 
-abstract class _ApisBase with Store {
+abstract class ApisBase with Store {
   UserModel? userdata;
 
 // Inside the Apis class

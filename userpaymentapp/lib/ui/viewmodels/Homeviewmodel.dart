@@ -6,11 +6,11 @@ import 'package:userpaymentapp/data/models/visitormodel.dart';
 import 'package:userpaymentapp/data/services/api.dart';
 part 'Homeviewmodel.g.dart';
 
-class HomeStore = _HomeStore with _$HomeStore;
+class HomeStore = HomeStores with _$HomeStore;
 
-abstract class _HomeStore with Store {
+abstract class HomeStores with Store {
   @observable
-  final Apis _apis = Apis();
+   Apis _apis = Apis();
   @observable
   List<UserModel>? userData;
   @observable
@@ -37,7 +37,6 @@ abstract class _HomeStore with Store {
   void getPayMethod(String method) {
     if (toggle) {
       selectedMethod = method;
-      print(selectedMethod);
     }
   }
 
@@ -47,7 +46,6 @@ abstract class _HomeStore with Store {
       userData = await _apis.getUserData();
       userlist = List<UserModel>.from(userData!);
       itemCount = userlist.length;
-      print(userlist[0].email);
     } catch (e) {
       print("error in fetching user data $e");
     }
@@ -64,7 +62,6 @@ abstract class _HomeStore with Store {
       sponsername: sponser,
     );
     visitorlist.add(data);
-    print(visitorlist.first.sponsername);
     visitorcontroller.clear();
     sponsercontroller.clear();
   }
@@ -79,16 +76,14 @@ void payDetails(int index){
   final price = pricecontroller.text;
   final data = PaymentDetailsModel(method: paymethod,name: name.toString(),price: price,time: DateTime.now());
   paymentlist.add(data);
-  print(paymentlist.first.name);
   
 }
 
 
 
 
-
   @action
-  _HomeStore() {
+  HomeStores() {
     init();
   }
 
